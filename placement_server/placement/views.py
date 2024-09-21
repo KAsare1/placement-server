@@ -1,5 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.conf import settings
+from django.core.mail import send_mail
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -7,6 +9,39 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from .models import Program, Choice, Results, ConsiderationRequest, Placement
 from .serializers import ProgramSerializer, ChoiceSerializer, ResultsSerializer, ConsiderationRequestSerializer, PlacementSerializer
 
+
+class SubmitChoicesView(APIView):
+    def post(self, request, student_id):
+        choice = get_object_or_404(Choice, student_id=student_id)
+
+        if choice.submitted:
+            return JsonResponse({'error': 'Choices have already been submitted.'}, status=403)
+
+        # Validate and set the choices before this point
+        choice.submitted = True
+        choice.save()
+
+        # Get student email from request or related model
+        student_email = request.data.get('email')  # Make sure email is passed in the request data
+        if not student_email:
+            return JsonResponse({'error': 'Email not provided.'}, status=400)
+
+        # Send confirmation email
+        self.send_confirmation_email(student_email, student_id, choice)
+
+        return JsonResponse({'message': 'Choices submitted successfully.'}, status=200)
+
+    def send_confirmation_email(self, email, student_id, choice):
+        subject = 'Confirmation of Your Program Choices'
+        message = f"Dear Student {student_id},\n\nYou have successfully submitted your choices:\n\n" \
+                  f"First Choice: {choice.first_choice}\n" \
+                  f"Second Choice: {choice.second_choice}\n" \
+                  f"Third Choice: {choice.third_choice}\n\n" \
+                  f"Thank you for your submission!"
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [email]
+
+        send_mail(subject, message, from_email, recipient_list)
 
 class ProgramListCreateView(ListCreateAPIView):
     queryset = Program.objects.all()
