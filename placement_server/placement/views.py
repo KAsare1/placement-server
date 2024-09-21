@@ -107,16 +107,3 @@ class UpdateChoicesView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class SubmitChoicesView(APIView):
-    def post(self, request, student_id):
-        choice = get_object_or_404(Choice, student_id=student_id)
-
-        if choice.submitted:
-            return JsonResponse({'error': 'Choices have already been submitted.'}, status=403)
-
-        # Assuming you've validated and set the choices before this point
-        choice.submitted = True
-        choice.save()
-
-        return JsonResponse({'message': 'Choices submitted successfully.'}, status=200)
