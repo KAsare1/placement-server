@@ -78,7 +78,7 @@ class ChoiceListCreateView(ListCreateAPIView):
         # Send an email using the provided email address
         send_mail(
             subject='Your Choices Have Been Submitted',
-            message=f'Dear {choice.student.name},\n\nYou have successfully submitted your choices:\n1. {choice.first_choice}\n2. {choice.second_choice}\n3. {choice.third_choice}',
+            message=f'Dear {choice.student},\n\nYou have successfully submitted your choices:\n1. {choice.first_choice}\n2. {choice.second_choice}\n3. {choice.third_choice}',
             from_email=settings.DEFAULT_FROM_EMAIL,  # Replace with your configured email address
             recipient_list=[email],  # Send email to the provided email
             fail_silently=False,
