@@ -13,7 +13,7 @@ urlpatterns = [
     
     path('choices/', ChoiceListCreateView.as_view(), name='choice-list-create'),
     path('choices/<int:pk>/', ChoiceDetailView.as_view(), name='choice-detail'),
-    path('choices/submit', SubmitChoicesView.as_view(), name='choice-create'),
+    path('choices/submit/', SubmitChoicesView.as_view(), name='choice-create'),
 
     path('results/', ResultsListCreateView.as_view(), name='results-list-create'),
     path('results/<int:pk>/', ResultsDetailView.as_view(), name='results-detail'),
