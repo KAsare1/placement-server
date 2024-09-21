@@ -52,18 +52,7 @@ class SubmitChoicesView(APIView):
 
         send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
-        
-    def send_confirmation_email(self, email, student_id, choice):
-        subject = 'Confirmation of Your Program Choices'
-        message = f"Dear Student {student_id},\n\nYou have successfully submitted your choices:\n\n" \
-                  f"First Choice: {choice.first_choice}\n" \
-                  f"Second Choice: {choice.second_choice}\n" \
-                  f"Third Choice: {choice.third_choice}\n\n" \
-                  f"Thank you for your submission!"
-        from_email = settings.DEFAULT_FROM_EMAIL
-        recipient_list = [email]
-
-        send_mail(subject, message, from_email, recipient_list)
+    
 
 class ProgramListCreateView(ListCreateAPIView):
     queryset = Program.objects.all()
