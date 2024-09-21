@@ -149,7 +149,7 @@ class SaveChoiceView(APIView):
             # Compose the email message
             subject = "Your Program Choices"
             message = f"""
-            Dear {choice.student.username},
+            Dear {choice.student},
 
             Your program choices have been recorded as follows:
             1st Choice: {choice.first_choice}
