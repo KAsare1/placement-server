@@ -27,10 +27,32 @@ class SubmitChoicesView(APIView):
             return JsonResponse({'error': 'Email not provided.'}, status=400)
 
         # Send confirmation email
-        self.send_confirmation_email(student_email, student_id, choice)
+        try:
+            self.send_confirmation_email(student_email, student_id, choice)
+        except Exception as e:
+            # Log the error (you might want to use Python's logging module here)
+            print(f"Error sending email: {str(e)}")
+            return JsonResponse({'error': 'Failed to send confirmation email.'}, status=500)
 
         return JsonResponse({'message': 'Choices submitted successfully.'}, status=200)
 
+    def send_confirmation_email(self, email, student_id, choice):
+        subject = 'Confirmation of Your Program Choices'
+        message = f"""Dear Student {student_id},
+
+                    You have successfully submitted your choices:
+
+                    First Choice: {choice.first_choice}
+                    Second Choice: {choice.second_choice}
+                    Third Choice: {choice.third_choice}
+
+                    Thank you for your submission!"""
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [email]
+
+        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+        
     def send_confirmation_email(self, email, student_id, choice):
         subject = 'Confirmation of Your Program Choices'
         message = f"Dear Student {student_id},\n\nYou have successfully submitted your choices:\n\n" \
