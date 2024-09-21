@@ -14,9 +14,10 @@ class ProgramSerializer(serializers.ModelSerializer):
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(write_only=True)
     class Meta:
         model = Choice
-        fields = ('student', 'first_choice', 'second_choice', 'third_choice')
+        fields = ('student', 'first_choice', 'second_choice', 'third_choice', 'email')
 
 class ResultsSerializer(serializers.ModelSerializer):
     class Meta:
