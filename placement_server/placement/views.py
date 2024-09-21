@@ -134,3 +134,48 @@ class UpdateChoicesView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+class SaveChoiceView(APIView):
+    def post(self, request):
+        serializer = ChoiceSerializer(data=request.data)
+        if serializer.is_valid():
+            # Save the choice
+            choice = serializer.save()
+            
+            # Get the email from the serializer
+            email = serializer.validated_data['email']
+            
+            # Compose the email message
+            subject = "Your Program Choices"
+            message = f"""
+            Dear {choice.student.username},
+
+            Your program choices have been recorded as follows:
+            1st Choice: {choice.first_choice}
+            2nd Choice: {choice.second_choice}
+            3rd Choice: {choice.third_choice}
+
+            Thank you for submitting your choices.
+            """
+            
+            # Send the email
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=False,
+                )
+                # Mark the choice as submitted
+                choice.submitted = True
+                choice.save()
+                
+                return Response({"message": "Choices saved and email sent successfully"}, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                # If email sending fails, we might want to delete the saved choice
+                choice.delete()
+                return Response({"error": f"Failed to send email: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

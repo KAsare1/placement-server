@@ -4,7 +4,7 @@ from .views import (
     ChoiceListCreateView, ChoiceDetailView,
     ResultsListCreateView, ResultsDetailView,
     ConsiderationRequestListCreateView, ConsiderationRequestDetailView,
-    PlacementListCreateView, PlacementDetailView, SubmitChoicesView,
+    PlacementListCreateView, PlacementDetailView, SaveChoiceView, SubmitChoicesView,
 )
 
 urlpatterns = [
@@ -13,7 +13,7 @@ urlpatterns = [
     
     path('choices/', ChoiceListCreateView.as_view(), name='choice-list-create'),
     path('choices/<int:pk>/', ChoiceDetailView.as_view(), name='choice-detail'),
-    path('choices/submit/<int:student_id>/', SubmitChoicesView.as_view(), name='choice-create'),
+    path('choices/submit/', SaveChoiceView.as_view(), name='choice-create'),
 
     path('results/', ResultsListCreateView.as_view(), name='results-list-create'),
     path('results/<int:pk>/', ResultsDetailView.as_view(), name='results-detail'),
