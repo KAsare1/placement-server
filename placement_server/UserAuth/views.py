@@ -53,16 +53,7 @@ class StudentRegistrationView(APIView):
         serializer = StudentRegistrationSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            # Create and send confirmation code
-            confirmation_code = ConfirmationCode.objects.create(user=user)
-            code = confirmation_code.generate_code()
-            send_mail(
-                'Email Confirmation Code',
-                f'Your confirmation code is {code}',
-                settings.DEFAULT_FROM_EMAIL,
-                'groupminiproject13@gmail.com',
-                fail_silently=True,
-            )
+            # You can now skip the confirmation code generation and email sending
             return Response({"detail": "Registration successful."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
