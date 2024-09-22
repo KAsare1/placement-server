@@ -62,19 +62,40 @@ class LoginView(APIView):
         student_id = request.data.get('student_id')
         password = request.data.get('password')
 
+        # Check if student_id and password are provided
+        if not student_id or not password:
+            return Response(
+                {"error": "Student ID and password are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Authenticate the user
         user = authenticate(student_id=student_id, password=password)
 
+        if not User.objects.filter(student_id=student_id).exists():
+            return Response(
+                {"error": "User does not exist."},
+                status=status.HTTP_404_NOT_FOUND)
+
         if user is not None:
-            if user.is_active or False:
+            if user.is_active:
                 refresh = RefreshToken.for_user(user)
                 return Response({
                     'refresh': str(refresh),
                     'access': str(refresh.access_token),
                 }, status=status.HTTP_200_OK)
             else:
-                return Response({"error": "User account is not active."}, status=status.HTTP_401_UNAUTHORIZED)
+                # User account is inactive
+                return Response(
+                    {"error": "User account is not active."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
         else:
-            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+            # Invalid credentials
+            return Response(
+                {"error": "Invalid student ID or password."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
 
 class ForgotPasswordView(APIView):
     def post(self, request):
