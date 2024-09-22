@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import dj_database_url
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
@@ -98,6 +99,8 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+DATABASES['default'] = dj_database_url.parse('postgresql://placement_db_user:vcrjNOVOEQT3WBsu4kgvxK5uHiYVd3ih@dpg-cro90ae8ii6s73f4b0d0-a.frankfurt-postgres.render.com/placement_db')
 
 
 # Password validation
