@@ -60,10 +60,10 @@ class StudentRegistrationView(APIView):
                 'Email Confirmation Code',
                 f'Your confirmation code is {code}',
                 settings.DEFAULT_FROM_EMAIL,
-                [user.email],
-                fail_silently=False,
+                'groupminiproject13@gmail.com',
+                fail_silently=True,
             )
-            return Response({"detail": "Registration successful. Please check your email for the confirmation code."}, status=status.HTTP_201_CREATED)
+            return Response({"detail": "Registration successful."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
@@ -74,7 +74,7 @@ class LoginView(APIView):
         user = authenticate(student_id=student_id, password=password)
 
         if user is not None:
-            if user.is_active:
+            if user.is_active or False:
                 refresh = RefreshToken.for_user(user)
                 return Response({
                     'refresh': str(refresh),
