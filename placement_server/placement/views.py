@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.core.mail import send_mail
@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import Program, Choice, Results, ConsiderationRequest, Placement
 from .serializers import ProgramSerializer, ChoiceSerializer, ResultsSerializer, ConsiderationRequestSerializer, PlacementSerializer
+import csv
 
 
 class SubmitChoicesView(APIView):
@@ -179,3 +180,27 @@ class SaveChoiceView(APIView):
                 return Response({"error": f"Failed to send email: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+
+
+
+class ExportDataView(APIView):
+
+
+    def get(self, request):
+        # Create the HTTP response with CSV content
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="choices_data.csv"'
+
+        writer = csv.writer(response)
+
+        # Write the headers for the CSV
+        writer.writerow(['Student', 'First Choice', 'Second Choice', 'Third Choice'])
+
+        # Write the data rows from the Choice model
+        for obj in Choice.objects.all():  # Adjust the queryset if necessary
+            writer.writerow([obj.student, obj.first_choice, obj.second_choice, obj.third_choice])
+
+        return response

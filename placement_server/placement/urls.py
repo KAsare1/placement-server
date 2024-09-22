@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    ProgramListCreateView, ProgramDetailView,
+    ExportDataView, ProgramListCreateView, ProgramDetailView,
     ChoiceListCreateView, ChoiceDetailView,
     ResultsListCreateView, ResultsDetailView,
     ConsiderationRequestListCreateView, ConsiderationRequestDetailView,
@@ -23,4 +23,6 @@ urlpatterns = [
 
     path('placements/', PlacementListCreateView.as_view(), name='placement-list-create'),
     path('placements/<int:pk>/', PlacementDetailView.as_view(), name='placement-detail'),
+
+    path('export-data/', ExportDataView.as_view(), name='export-data')
 ]

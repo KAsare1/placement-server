@@ -1,6 +1,29 @@
 from django.contrib import admin
 from .models import Program, Choice, Results, ConsiderationRequest, Placement
 from django.core.exceptions import ValidationError
+import csv
+from django.http import HttpResponse
+
+def export_choices_to_csv(modeladmin, request, queryset):
+    """
+    Exports selected Choice model data to CSV
+    """
+    # Set the HTTP response with CSV format
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="choices_data.csv"'
+
+    writer = csv.writer(response)
+
+    # Write the headers for the CSV file
+    writer.writerow(['Student', 'First Choice', 'Second Choice', 'Third Choice'])  # Adjust these as needed
+
+    # Write the data rows
+    for obj in queryset:
+        writer.writerow([obj.student, obj.first_choice, obj.second_choice, obj.third_choice])
+
+    return response
+
+export_choices_to_csv.short_description = "Export Selected Choices to CSV"
 
 @admin.register(Program)
 class ProgramAdmin(admin.ModelAdmin):
@@ -29,6 +52,7 @@ class ProgramAdmin(admin.ModelAdmin):
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
     list_display = ('student', 'first_choice', 'second_choice', 'third_choice')
+    actions = [export_choices_to_csv]
 
 @admin.register(Results)
 class ResultsAdmin(admin.ModelAdmin):
@@ -41,3 +65,6 @@ class ConsiderationRequestAdmin(admin.ModelAdmin):
 @admin.register(Placement)
 class PlacementAdmin(admin.ModelAdmin):
     list_display = ('student', 'placement')
+
+
+
