@@ -9,9 +9,10 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from .models import Program, Choice, Results, ConsiderationRequest, Placement
 from .serializers import ProgramSerializer, ChoiceSerializer, ResultsSerializer, ConsiderationRequestSerializer, PlacementSerializer
 import csv
-
+from rest_framework.permissions import IsAuthenticated
 
 class SubmitChoicesView(APIView):
+    
     def post(self, request, student_id):
         choice = get_object_or_404(Choice, student_id=student_id)
 
@@ -66,6 +67,7 @@ class ProgramDetailView(RetrieveUpdateDestroyAPIView):
 
 
 class ChoiceListCreateView(ListCreateAPIView):
+
     queryset = Choice.objects.all()
     serializer_class = ChoiceSerializer
 
@@ -138,6 +140,7 @@ class UpdateChoicesView(APIView):
 
 
 class SaveChoiceView(APIView):
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         serializer = ChoiceSerializer(data=request.data)
         if serializer.is_valid():
@@ -152,12 +155,12 @@ class SaveChoiceView(APIView):
             message = f"""
             Dear {choice.student},
 
-            Your program choices have been recorded as follows:
-            1st Choice: {choice.first_choice}
-            2nd Choice: {choice.second_choice}
-            3rd Choice: {choice.third_choice}
+                Your program choices have been recorded as follows:
+                1st Choice: {choice.first_choice}
+                2nd Choice: {choice.second_choice}
+                3rd Choice: {choice.third_choice}
 
-            Thank you for submitting your choices.
+            Thank you for submitting your choices You will receive your placement soon.
             """
             
             # Send the email
