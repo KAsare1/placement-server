@@ -140,7 +140,6 @@ class UpdateChoicesView(APIView):
 
 
 class SaveChoiceView(APIView):
-    permission_classes = [IsAuthenticated]
     def post(self, request):
         serializer = ChoiceSerializer(data=request.data)
         if serializer.is_valid():
