@@ -19,17 +19,6 @@ class ChoiceSerializer(serializers.ModelSerializer):
         model = Choice
         fields = ('student', 'first_choice', 'second_choice', 'third_choice', 'email')
 
-    def create(self, validated_data):
-        email = validated_data.pop('email')  # Remove email from validated data
-
-        # Create the Choice instance without the email field
-        choice = Choice.objects.create(**validated_data)
-
-        # You can now send the email after creating the choice if needed
-        # Optionally, you could return choice and handle email sending in your view
-
-        return choice
-
 class ResultsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Results

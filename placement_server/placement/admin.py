@@ -15,11 +15,11 @@ def export_choices_to_csv(modeladmin, request, queryset):
     writer = csv.writer(response)
 
     # Write the headers for the CSV file
-    writer.writerow(['Student', 'First Choice', 'Second Choice', 'Third Choice'])  # Adjust these as needed
+    writer.writerow(['Student', 'email', 'First Choice', 'Second Choice', 'Third Choice'])  # Adjust these as needed
 
     # Write the data rows
     for obj in queryset:
-        writer.writerow([obj.student, obj.first_choice, obj.second_choice, obj.third_choice])
+        writer.writerow([obj.student, obj.email, obj.first_choice, obj.second_choice, obj.third_choice])
 
     return response
 
@@ -51,7 +51,7 @@ class ProgramAdmin(admin.ModelAdmin):
 # Keep your other admin registrations as they are
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ('student', 'first_choice', 'second_choice', 'third_choice')
+    list_display = ('student', 'email','first_choice', 'second_choice', 'third_choice')
     actions = [export_choices_to_csv]
 
 @admin.register(Results)

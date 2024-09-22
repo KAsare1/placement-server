@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    ExportDataView, ProgramListCreateView, ProgramDetailView,
+    ClearChoicesView, ExportDataView, ProgramListCreateView, ProgramDetailView,
     ChoiceListCreateView, ChoiceDetailView,
     ResultsListCreateView, ResultsDetailView,
     ConsiderationRequestListCreateView, ConsiderationRequestDetailView,
@@ -14,6 +14,7 @@ urlpatterns = [
     path('choices/', ChoiceListCreateView.as_view(), name='choice-list-create'),
     path('choices/<int:pk>/', ChoiceDetailView.as_view(), name='choice-detail'),
     path('choices/submit/', SaveChoiceView.as_view(), name='choice-create'),
+    path('clear-choices/', ClearChoicesView.as_view(), name='clear-choices'),
 
     path('results/', ResultsListCreateView.as_view(), name='results-list-create'),
     path('results/<int:pk>/', ResultsDetailView.as_view(), name='results-detail'),

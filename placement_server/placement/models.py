@@ -36,6 +36,7 @@ class Program(models.Model):
 
 class Choice(models.Model):
     student = models.OneToOneField("UserAuth.User", verbose_name=("Students"), on_delete=models.CASCADE)
+    email = models.CharField(null=True, blank=True, max_length=100)
     first_choice = models.ForeignKey(Program, on_delete=models.CASCADE, related_name='first_choice_students', null=True, blank=True)
     second_choice = models.ForeignKey(Program, on_delete=models.CASCADE, related_name='second_choice_students', null=True, blank=True)
     third_choice = models.ForeignKey(Program, on_delete=models.CASCADE, related_name='third_choice_students', null=True, blank=True)

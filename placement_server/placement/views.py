@@ -159,7 +159,7 @@ class SaveChoiceView(APIView):
                 2nd Choice: {choice.second_choice}
                 3rd Choice: {choice.third_choice}
 
-            Thank you for submitting your choices You will receive your placement soon.
+            Thank you for submitting your choices. You will receive your placement soon.
             """
             
             # Send the email
@@ -182,7 +182,12 @@ class SaveChoiceView(APIView):
                 return Response({"error": f"Failed to send email: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+class ClearChoicesView(APIView):
+    def delete(self, request):
+        # Delete all choices
+        Choice.objects.all().delete()
+        return Response({"detail": "All choices cleared successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 
 
@@ -199,10 +204,10 @@ class ExportDataView(APIView):
         writer = csv.writer(response)
 
         # Write the headers for the CSV
-        writer.writerow(['Student', 'First Choice', 'Second Choice', 'Third Choice'])
+        writer.writerow(['Student', 'Email', 'First Choice', 'Second Choice', 'Third Choice'])
 
         # Write the data rows from the Choice model
         for obj in Choice.objects.all():  # Adjust the queryset if necessary
-            writer.writerow([obj.student, obj.first_choice, obj.second_choice, obj.third_choice])
+            writer.writerow([obj.student, obj.email, obj.first_choice, obj.second_choice, obj.third_choice])
 
         return response
